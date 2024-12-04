@@ -46,6 +46,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         colbert_dim: int = -1,
         cache_dir: str = None,
         torch_dtype: Optional[torch.dtype] = None,
+        revision: str = None,
     ):
         """Get the model.
 
@@ -56,6 +57,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             colbert_dim (int, optional): Colbert dim to set. Defaults to ``-1``.
             cache_dir (str, optional): HF cache dir to store the model. Defaults to ``None``.
             torch_dtype (Optional[torch.dtype], optional): Torch dtype used when loading model weights. Defaults to ``None``.
+            revision (str, optional): HF revision for the model. Defaults to ``None``(latest).
 
         Returns:
             dict: A dictionary containing the model, colbert linear and sparse linear.
@@ -65,6 +67,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             model_name_or_path = snapshot_download(
                 repo_id=model_name_or_path,
                 cache_dir=cache_folder,
+                revision=revision,
                 ignore_patterns=['flax_model.msgpack', 'rust_model.ot', 'tf_model.h5']
             )
 
@@ -73,6 +76,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             cache_dir=cache_folder,
             trust_remote_code=trust_remote_code,
             dtype=torch_dtype,
+            revision=revision,
         )
         colbert_linear = torch.nn.Linear(
             in_features=model.config.hidden_size,
