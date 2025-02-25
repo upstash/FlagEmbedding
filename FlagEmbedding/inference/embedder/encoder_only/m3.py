@@ -61,6 +61,7 @@ class M3Embedder(AbsEmbedder):
         trust_remote_code: bool = False,
         cache_dir: Optional[str] = None,
         revision: Optional[str] = None,
+        local_files_only: bool = False,
         colbert_dim: int = -1,
         # inference
         batch_size: int = 256,
@@ -96,6 +97,7 @@ class M3Embedder(AbsEmbedder):
             trust_remote_code=trust_remote_code,
             cache_dir=cache_dir,
             revision=revision,
+            local_files_only=local_files_only,
         )
         self.model = EncoderOnlyEmbedderM3ModelForInference(
             EncoderOnlyEmbedderM3Runner.get_model(
@@ -105,6 +107,7 @@ class M3Embedder(AbsEmbedder):
                 cache_dir=cache_dir,
                 torch_dtype=self.get_model_torch_dtype(),
                 revision=revision,
+                local_files_only=local_files_only,
             ),
             tokenizer=self.tokenizer,
             sentence_pooling_method=pooling_method,
