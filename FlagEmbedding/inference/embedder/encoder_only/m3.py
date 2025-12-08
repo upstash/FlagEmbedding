@@ -341,6 +341,7 @@ class M3Embedder(AbsEmbedder):
         """
         # pop convert_to_numpy from kwargs
         kwargs.pop("convert_to_numpy", None)
+        show_progress_bar = kwargs.pop("show_progress_bar", False)
 
         if device is None:
             device = self.target_devices[0]
@@ -381,7 +382,7 @@ class M3Embedder(AbsEmbedder):
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in trange(0, len(sentences), batch_size, desc='pre tokenize',
-                                  disable=len(sentences) < batch_size):
+                                  disable=(not show_progress_bar) or (len(sentences) < batch_size)):
             sentences_batch = sentences[start_index:start_index + batch_size]
             inputs_batch = self.tokenizer(
                 sentences_batch,
@@ -423,7 +424,7 @@ class M3Embedder(AbsEmbedder):
         # encode
         all_dense_embeddings, all_lexical_weights, all_colbert_vecs = [], [], []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Inference Embeddings",
-                                disable=len(sentences) < batch_size):
+                                disable=(not show_progress_bar) or len(sentences) < batch_size):
             inputs_batch = all_inputs_sorted[start_index:start_index + batch_size]
             inputs_batch = self.tokenizer.pad(
                 inputs_batch,
